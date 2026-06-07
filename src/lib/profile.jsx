@@ -32,12 +32,17 @@ async function fetchProfile(user) {
   return mapRow(data)
 }
 
-async function persistProfile(user, patch) {
+async function persistProfile(_user, patch) {
   if (!isSupabaseReady) {
     const next = { ...(lsGet() || {}), ...patch }
     lsSet(next)
     return next
   }
+  // Always use the freshly-authenticated user so the row id matches auth.uid()
+  // (this is what the row-level security check compares against).
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   if (!user) throw new Error('Please sign in to save your profile.')
   const row = { id: user.id }
   if ('displayName' in patch) row.display_name = patch.displayName
