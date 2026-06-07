@@ -57,7 +57,11 @@ export const displayedName = (() => {
 // these at e.g. '/her/cover.jpg'. The defaults are neutral placeholders —
 // replace `signinHero` with a striking editorial portrait of Irene.
 export const images = {
-  signinHero: 'https://picsum.photos/seed/hercanvas-hero/1200/1600',
+  // Sign-in background: if signinVideos has clips, they autoplay & cycle;
+  // otherwise signinHero (image) is shown. signinHero also serves as the
+  // video poster (shown while a clip loads).
+  signinVideos: ['/her/login-1.mp4', '/her/login-2.mp4'],
+  signinHero: '/her/pfp.jpg',
   // Optional photos for the lookbook covers. If set, the cover becomes her
   // photo with the title/monogram over it. Leave '' for the artsy default.
   bookCover: '/her/cover-front.jpg',     // front cover
@@ -72,36 +76,16 @@ export const signin = {
   quote: 'For you, and everything you’re becoming.',
   cta: 'Step inside',
   ctaEmail: 'Send my way in',
+  // The little line under the sign-in button. Make it yours.
+  footnote: 'Made with love, only for you.',
 }
 
 // ── Preloaded lookbook photos ──────────────────────────────────────────
 // Drop her real photos into /public/her/ and list the filenames here, or
 // use full URLs. They seed her lookbook so it feels alive on day one.
-export const preloadedFits = [
-  // Placeholder samples so the book works immediately — replace the `src`
-  // with her real photos (drop them in /public/her/ and use '/her/file.jpg').
-  {
-    src: 'https://picsum.photos/seed/irene1/600/800',
-    title: 'Golden hour',
-    occasion: 'Shoot',
-    aesthetic: 'Editorial',
-    note: 'replace me with her real look',
-  },
-  {
-    src: 'https://picsum.photos/seed/irene2/600/800',
-    title: 'Date night',
-    occasion: 'Date',
-    aesthetic: 'Soft glam',
-    note: '',
-  },
-  {
-    src: 'https://picsum.photos/seed/irene3/600/800',
-    title: 'Campus fit',
-    occasion: 'Everyday',
-    aesthetic: 'Casual chic',
-    note: '',
-  },
-]
+// Real fits are stored in the cloud once she's signed in; this stays empty so
+// there are no placeholder images. (To seed defaults, add { src, title, ... }.)
+export const preloadedFits = []
 
 // ── Poems & love notes ─────────────────────────────────────────────────
 // These rotate through quiet corners of the app. Write your own here.
@@ -121,8 +105,9 @@ export const poems = [
 export const easterEggs = {
   // e.g. anniversaries, her birthday. Format: 'MM-DD'
   specialDates: {
-    // '02-14': 'Happy Valentine’s, my muse. Every board here is really about you.',
-    // '07-04': 'Happy Birthday, Obenewaa. The whole app is the gift.',
+    // Her birthday 🎂 — shows automatically on June 15.
+    '06-15': 'Happy Birthday, Obenewaa. The whole world should be styled around you today — this little studio always has been. I love you. 🤍',
+    // Add more, e.g. an anniversary: '12-31': '...'. Format: 'MM-DD'.
   },
   // A note tucked into the menu, just for her.
   hiddenNote:

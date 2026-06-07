@@ -100,14 +100,20 @@ export default function LookbookPage() {
     pages.push(
       <Page key={f.id || `fit-${i}`} className="lined">
         <figure className="flex h-full flex-col">
-          <button onClick={(e) => openZoom(e, f)} className="relative overflow-hidden rounded-lg border border-line bg-white p-1.5 shadow-sm">
-            <img src={f.src} alt={f.title} loading="lazy" className="h-48 w-full rounded object-cover transition hover:scale-[1.02]" />
+          <div className="relative overflow-hidden rounded-lg border border-line bg-white p-1.5 shadow-sm">
+            {f.mediaType === 'video' ? (
+              <video src={f.src} controls playsInline className="h-48 w-full rounded bg-black object-cover" />
+            ) : (
+              <button onClick={(e) => openZoom(e, f)} className="block w-full">
+                <img src={f.src} alt={f.title} loading="lazy" className="h-48 w-full rounded object-cover transition hover:scale-[1.02]" />
+              </button>
+            )}
             {f.favourite && (
               <span className="absolute right-2.5 top-2.5 rounded-full bg-white/90 p-1.5 text-primary">
                 <HeartIcon filled />
               </span>
             )}
-          </button>
+          </div>
 
           <figcaption className="mt-3">
             <p className="caption text-muted">{[f.occasion, f.aesthetic].filter(Boolean).join(' · ')}</p>

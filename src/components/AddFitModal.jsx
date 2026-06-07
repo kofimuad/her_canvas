@@ -7,8 +7,10 @@ import { occasions, presetCategories, profile } from '../config/irene'
 const aestheticOptions = [...new Set([...profile.signatureAesthetics, ...presetCategories])]
 
 export default function AddFitModal({ open, onClose, onSave }) {
-  const [preview, setPreview] = useState(null) // dataUrl
+  const [preview, setPreview] = useState(null) // dataUrl or object URL
   const [blob, setBlob] = useState(null)
+  const [mediaType, setMediaType] = useState('image') // 'image' | 'video'
+  const [contentType, setContentType] = useState('image/jpeg')
   const [title, setTitle] = useState('')
   const [occasion, setOccasion] = useState('')
   const [aesthetic, setAesthetic] = useState('')
@@ -20,8 +22,9 @@ export default function AddFitModal({ open, onClose, onSave }) {
   const [importing, setImporting] = useState(false)
 
   function reset() {
-    setPreview(null); setBlob(null); setTitle(''); setOccasion('')
-    setAesthetic(''); setNote(''); setFavourite(false); setError(''); setLink('')
+    setPreview(null); setBlob(null); setMediaType('image'); setContentType('image/jpeg')
+    setTitle(''); setOccasion(''); setAesthetic(''); setNote(''); setFavourite(false)
+    setError(''); setLink('')
   }
 
   async function importFromLink() {
@@ -37,6 +40,8 @@ export default function AddFitModal({ open, onClose, onSave }) {
       const { dataUrl, blob } = await processDataUrl(data.dataUrl)
       setPreview(dataUrl)
       setBlob(blob)
+      setMediaType('image')
+      setContentType('image/jpeg')
       if (!title && data.title) setTitle(data.title.slice(0, 80))
     } catch (e) {
       setError(e.message)
@@ -54,23 +59,40 @@ export default function AddFitModal({ open, onClose, onSave }) {
     if (!file) return
     setError('')
     try {
-      const { dataUrl, blob } = await processImage(file)
-      setPreview(dataUrl)
-      setBlob(blob)
+      if (file.type.startsWith('video/')) {
+        // Videos are uploaded as-is (no resize). Keep them reasonably short.
+        if (file.size > 45 * 1024 * 1024) {
+          setError('That video is over 45MB — please trim it or pick a shorter one.')
+          return
+        }
+        setPreview(URL.createObjectURL(file))
+        setBlob(file)
+        setMediaType('video')
+        setContentType(file.type || 'video/mp4')
+      } else {
+        const { dataUrl, blob } = await processImage(file)
+        setPreview(dataUrl)
+        setBlob(blob)
+        setMediaType('image')
+        setContentType('image/jpeg')
+      }
     } catch {
-      setError('Could not read that image — try another.')
+      setError('Could not read that file — try another.')
     }
   }
 
   async function save() {
     if (!preview) {
-      setError('Add a photo first.')
+      setError('Add a photo or video first.')
       return
     }
     setBusy(true)
     setError('')
     try {
-      await onSave({ dataUrl: preview, blob, title: title.trim() || 'Untitled fit', occasion, aesthetic, note: note.trim(), favourite })
+      await onSave({
+        dataUrl: preview, blob, mediaType, contentType,
+        title: title.trim() || 'Untitled fit', occasion, aesthetic, note: note.trim(), favourite,
+      })
       close()
     } catch (e) {
       setError(e.message)
@@ -101,17 +123,21 @@ export default function AddFitModal({ open, onClose, onSave }) {
             <p className="caption text-primary">A new fit</p>
             <h2 className="mt-1 font-display text-2xl">Add to your lookbook</h2>
 
-            {/* Photo */}
+            {/* Photo or video */}
             <label className="mt-5 block">
               {preview ? (
-                <img src={preview} alt="preview" className="h-56 w-full rounded-xl2 object-cover" />
+                mediaType === 'video' ? (
+                  <video src={preview} controls playsInline className="h-56 w-full rounded-xl2 bg-black object-contain" />
+                ) : (
+                  <img src={preview} alt="preview" className="h-56 w-full rounded-xl2 object-cover" />
+                )
               ) : (
                 <div className="flex h-56 w-full flex-col items-center justify-center rounded-xl2 border border-dashed border-line text-muted">
-                  <span className="caption">Tap to choose a photo</span>
+                  <span className="caption">Tap to choose a photo or video</span>
                   <span className="mt-1 text-xs">from your camera or gallery</span>
                 </div>
               )}
-              <input type="file" accept="image/*" className="hidden" onChange={pick} />
+              <input type="file" accept="image/*,video/*" className="hidden" onChange={pick} />
             </label>
 
             {/* Or import from a shared link */}

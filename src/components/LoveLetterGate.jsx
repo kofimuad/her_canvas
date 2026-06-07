@@ -1,7 +1,62 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../lib/auth'
 import { profile, signin, images } from '../config/irene'
+
+// Background: cross-fade between video clips if provided, else a still image.
+// Both clips stay mounted (and preloaded) so there's no black gap on switch.
+function HeroMedia({ className }) {
+  const videos = images.signinVideos || []
+  const [active, setActive] = useState(0)
+  const refs = useRef([])
+
+  useEffect(() => {
+    if (!videos.length) return
+    const v = refs.current[active]
+    if (v) {
+      try {
+        v.currentTime = 0
+        v.play()
+      } catch {
+        /* autoplay guard */
+      }
+    }
+  }, [active])
+
+  if (!videos.length) {
+    return (
+      <motion.img
+        src={images.signinHero}
+        alt=""
+        initial={{ scale: 1.14 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 9, ease: 'easeOut' }}
+        className={className}
+      />
+    )
+  }
+
+  return (
+    <div className={className}>
+      <div className="absolute inset-0 bg-ink" />
+      {videos.map((src, idx) => (
+        <video
+          key={src}
+          ref={(el) => (refs.current[idx] = el)}
+          src={src}
+          muted
+          playsInline
+          preload="auto"
+          autoPlay={idx === 0}
+          onEnded={() => setActive((a) => (a + 1) % videos.length)}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            idx === active ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      ))}
+    </div>
+  )
+}
 
 // Mobile-first editorial sign-in. Fills the viewport exactly (no scroll).
 //  - Mobile: full-bleed portrait, content anchored to the bottom over a gradient.
@@ -41,15 +96,8 @@ export default function LoveLetterGate() {
 
   return (
     <div className="fixed inset-0 h-[100dvh] w-full overflow-hidden bg-ink">
-      {/* Full-bleed portrait (always present; the cream panel covers it on desktop) */}
-      <motion.img
-        src={images.signinHero}
-        alt=""
-        initial={{ scale: 1.14 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 9, ease: 'easeOut' }}
-        className="absolute inset-0 h-full w-full object-cover md:w-[58%]"
-      />
+      {/* Full-bleed background — cycles videos if provided, else the image */}
+      <HeroMedia className="absolute inset-0 h-full w-full object-cover md:w-[58%]" />
       {/* Mobile legibility gradient (hidden on desktop, where text sits on cream) */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/20 md:hidden" />
 
@@ -112,7 +160,7 @@ export default function LoveLetterGate() {
               </motion.button>
 
               <motion.p {...rise(0.52)} className="caption mt-7 text-white/65 md:text-muted">
-                {isSupabaseReady ? 'No password — ever.' : 'Demo mode'}
+                {signin.footnote}
               </motion.p>
             </div>
           ) : (

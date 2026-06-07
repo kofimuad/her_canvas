@@ -20,6 +20,7 @@ const newId = () =>
 const mapRow = (r) => ({
   id: r.id,
   src: r.image_url,
+  mediaType: r.media_type || 'image',
   title: r.title,
   occasion: r.occasion,
   aesthetic: r.aesthetic,
@@ -49,11 +50,15 @@ export async function listFits() {
   return (data || []).map(mapRow)
 }
 
-export async function addFit({ blob, dataUrl, title, occasion, aesthetic, note, favourite }) {
+export async function addFit({
+  blob, dataUrl, title, occasion, aesthetic, note, favourite,
+  mediaType = 'image', contentType = 'image/jpeg',
+}) {
   if (!isSupabaseReady) {
     const item = {
       id: newId(),
       src: dataUrl,
+      mediaType,
       title,
       occasion,
       aesthetic,
@@ -68,10 +73,11 @@ export async function addFit({ blob, dataUrl, title, occasion, aesthetic, note, 
   const user = await currentUser()
   if (!user) throw new Error('Please sign in to save fits.')
 
-  const path = `${user.id}/${newId()}.jpg`
+  const ext = mediaType === 'video' ? (contentType.split('/')[1] || 'mp4') : 'jpg'
+  const path = `${user.id}/${newId()}.${ext}`
   const { error: upErr } = await supabase.storage
     .from('lookbook')
-    .upload(path, blob, { contentType: 'image/jpeg', upsert: false })
+    .upload(path, blob, { contentType, upsert: false })
   if (upErr) throw upErr
 
   const { data: pub } = supabase.storage.from('lookbook').getPublicUrl(path)
@@ -82,6 +88,7 @@ export async function addFit({ blob, dataUrl, title, occasion, aesthetic, note, 
       user_id: user.id,
       image_url: pub.publicUrl,
       storage_path: path,
+      media_type: mediaType,
       title,
       occasion,
       aesthetic,

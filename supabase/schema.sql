@@ -36,6 +36,7 @@ create table if not exists fits (
   user_id    uuid not null references auth.users(id) on delete cascade,
   image_url  text not null,
   storage_path text,                          -- path in the 'lookbook' bucket
+  media_type text default 'image',            -- 'image' | 'video'
   title      text,
   occasion   text,                            -- shoot/date/casual/event/everyday
   aesthetic  text,                            -- mood/vibe label
