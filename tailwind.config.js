@@ -16,8 +16,8 @@ export default {
         line: 'var(--c-line)',
       },
       fontFamily: {
-        display: ['"Baloo 2"', 'system-ui', 'sans-serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Ladylike', 'Inter', 'system-ui', 'sans-serif'],
+        body: ['Ladylike', 'Inter', 'system-ui', 'sans-serif'],
         hand: ['Caveat', 'cursive'],
       },
       boxShadow: {

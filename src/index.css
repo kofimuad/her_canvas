@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Her chosen display font, used all around the app */
+@font-face {
+  font-family: 'Ladylike';
+  src: url('/fonts/ladylike.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ─── Theme palettes ────────────────────────────────────────────────────
    Girly but elegant by default ("blush"), with switchable alternatives.
    The active theme is set via <html data-theme="..."> by ThemeProvider. */
@@ -62,6 +71,61 @@
   --c-line: #e3ebe0;
 }
 
+[data-theme='bubblegum'] {
+  --c-canvas: #fff5fa;
+  --c-surface: #ffffff;
+  --c-ink: #3a1f2c;
+  --c-muted: #b07a92;
+  --c-primary: #e8559e;
+  --c-primary-soft: #ffd9ec;
+  --c-accent: #f2a43d;
+  --c-line: #fbe0ee;
+}
+
+[data-theme='sky'] {
+  --c-canvas: #f3f8fd;
+  --c-surface: #ffffff;
+  --c-ink: #1d2a38;
+  --c-muted: #7d93a8;
+  --c-primary: #4a90d9;
+  --c-primary-soft: #d9e9f9;
+  --c-accent: #e0a14a;
+  --c-line: #dfeaf5;
+}
+
+[data-theme='butter'] {
+  --c-canvas: #fffaf0;
+  --c-surface: #fffdf8;
+  --c-ink: #3a3017;
+  --c-muted: #a59367;
+  --c-primary: #e0a92a;
+  --c-primary-soft: #fdeec2;
+  --c-accent: #d98248;
+  --c-line: #f2e7cd;
+}
+
+[data-theme='mint'] {
+  --c-canvas: #f2fbf8;
+  --c-surface: #ffffff;
+  --c-ink: #1d322b;
+  --c-muted: #79a397;
+  --c-primary: #2bb99a;
+  --c-primary-soft: #cdf2e8;
+  --c-accent: #e8a35a;
+  --c-line: #d8efe8;
+}
+
+[data-theme='coral'] {
+  --c-canvas: #fff6f3;
+  --c-surface: #ffffff;
+  --c-ink: #3a241d;
+  --c-muted: #b08579;
+  --c-primary: #f06a4f;
+  --c-primary-soft: #ffdcd2;
+  --c-accent: #e0a14a;
+  --c-line: #f7e0d8;
+}
+
 /* Glitter twinkle */
 @keyframes twinkle {
   0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(0deg); }
@@ -75,25 +139,17 @@ body {
   margin: 0;
   background: var(--c-canvas);
   color: var(--c-ink);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Ladylike', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 ::selection { background: var(--c-primary-soft); }
 
-/* Playful display type */
-.font-display { letter-spacing: 0; font-weight: 600; }
-h1, h2, h3 { font-family: 'Baloo 2', system-ui, sans-serif; font-weight: 700; }
+/* Playful display type (Ladylike is a single weight) */
+.font-display { letter-spacing: 0.01em; font-weight: normal; }
+h1, h2, h3 { font-family: 'Ladylike', 'Inter', sans-serif; font-weight: normal; }
 p { line-height: 1.6; }
-
-/* Colorful playful text (for the mobile brand + accents) */
-.rainbow-text {
-  background: linear-gradient(92deg, #d98ca0 0%, #d98248 32%, #a78bce 64%, #7fa07a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
 
 /* Small reusable component classes */
 @layer components {

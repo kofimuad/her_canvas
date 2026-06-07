@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, Route, Routes } from 'react-router-dom'
 import ThemeSwitcher from './components/ThemeSwitcher'
 import Walkthrough from './components/Walkthrough'
-import Logo from './components/Logo'
+import Avatar from './components/Avatar'
 import LoveNote from './components/LoveNote'
 import LoveLetterGate from './components/LoveLetterGate'
 import Onboarding from './components/Onboarding'
@@ -65,13 +65,12 @@ function AppShell({ signOut }) {
     <div className="min-h-full">
       <header className="sticky top-0 z-20 border-b border-line bg-canvas/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-          <NavLink to="/">
-            <span className="hidden sm:block">
-              <Logo />
-            </span>
-            {/* Mobile: colorful playful name fills the space */}
-            <span className="rainbow-text font-display text-3xl sm:hidden">{displayedName}</span>
-          </NavLink>
+          <div className="flex items-center gap-2.5">
+            <Avatar />
+            <NavLink to="/" className="hidden font-display text-xl tracking-tight sm:block">
+              {displayedName}
+            </NavLink>
+          </div>
 
           <nav className="hidden gap-1 md:flex">
             {nav.map((n) => (
@@ -90,7 +89,7 @@ function AppShell({ signOut }) {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <ThemeSwitcher />
             <button
               onClick={() => setTourOpen(true)}
