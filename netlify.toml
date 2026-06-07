@@ -1,0 +1,29 @@
+# Her Canvas — Netlify configuration
+# Frontend (Vite/React) + serverless backend (Netlify Functions) all in one repo.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  # Bundle node_modules (Anthropic SDK, Supabase) into the functions.
+  node_bundler = "esbuild"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888
+  framework = "#custom"
+
+# Pretty API path: /api/foo  ->  /.netlify/functions/foo
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# SPA fallback so React Router handles client-side routes.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

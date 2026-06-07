@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Theme palettes ────────────────────────────────────────────────────
+   Girly but elegant by default ("blush"), with switchable alternatives.
+   The active theme is set via <html data-theme="..."> by ThemeProvider. */
+
+:root,
+[data-theme='blush'] {
+  --c-canvas: #fdf6f4;       /* warm rose-cream */
+  --c-surface: #ffffff;
+  --c-ink: #2c2126;
+  --c-muted: #9a8086;
+  --c-primary: #d98ca0;      /* dusty rose */
+  --c-primary-soft: #f7dde4;
+  --c-accent: #c19a6b;       /* muted gold */
+  --c-line: #f0e2e5;
+}
+
+[data-theme='lavender'] {
+  --c-canvas: #f8f6fc;
+  --c-surface: #ffffff;
+  --c-ink: #29242f;
+  --c-muted: #8d84a0;
+  --c-primary: #a78bce;
+  --c-primary-soft: #e9e0f7;
+  --c-accent: #c9a14a;
+  --c-line: #ece6f5;
+}
+
+[data-theme='accra'] {
+  --c-canvas: #fdf6ee;        /* warm sand */
+  --c-surface: #fffaf3;
+  --c-ink: #2e241b;
+  --c-muted: #9a8265;
+  --c-primary: #d98248;       /* terracotta */
+  --c-primary-soft: #f6dcc4;
+  --c-accent: #4f7d5c;        /* deep palm green */
+  --c-line: #efe1d0;
+}
+
+[data-theme='noir'] {
+  --c-canvas: #f6f5f3;        /* editorial cream */
+  --c-surface: #ffffff;
+  --c-ink: #161514;
+  --c-muted: #8a8782;
+  --c-primary: #1f1d1b;       /* near-black */
+  --c-primary-soft: #e6e4e0;
+  --c-accent: #b08d57;        /* champagne gold */
+  --c-line: #e7e5e1;
+}
+
+[data-theme='sage'] {
+  --c-canvas: #f5f8f4;
+  --c-surface: #ffffff;
+  --c-ink: #22281f;
+  --c-muted: #7e8c79;
+  --c-primary: #7fa07a;
+  --c-primary-soft: #dfeada;
+  --c-accent: #c98b7a;
+  --c-line: #e3ebe0;
+}
+
+/* Glitter twinkle */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(20deg); }
+}
+.sparkle { animation: twinkle 2.4s ease-in-out infinite; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--c-canvas);
+  color: var(--c-ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--c-primary-soft); }
+
+/* Playful display type */
+.font-display { letter-spacing: 0; font-weight: 600; }
+h1, h2, h3 { font-family: 'Baloo 2', system-ui, sans-serif; font-weight: 700; }
+p { line-height: 1.6; }
+
+/* Colorful playful text (for the mobile brand + accents) */
+.rainbow-text {
+  background: linear-gradient(92deg, #d98ca0 0%, #d98248 32%, #a78bce 64%, #7fa07a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Small reusable component classes */
+@layer components {
+  .card {
+    @apply bg-surface border border-line rounded-xl2 shadow-soft;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
+           font-display transition active:scale-[.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-primary text-white hover:opacity-90;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-surface text-ink hover:bg-primary-soft;
+  }
+  .input {
+    @apply w-full rounded-xl2 border border-line bg-surface px-4 py-3 text-ink
+           placeholder:text-muted outline-none focus:border-primary;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full border border-line bg-surface
+           px-3 py-1 text-sm text-ink hover:bg-primary-soft cursor-pointer transition;
+  }
+  .chip-active {
+    @apply bg-primary text-white border-primary;
+  }
+  .h-display { @apply font-display; }
+
+  /* Editorial Romance: small-caps caption line */
+  .caption {
+    @apply text-xs font-medium uppercase tracking-[0.18em];
+  }
+}
+
+/* ─── Book lookbook ─────────────────────────────────────────────────── */
+.book-shadow { filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.22)); }
+
+.book-page {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 1.5rem;
+  background: #fcf9f4;            /* warm paper */
+  color: var(--c-ink);
+  overflow: hidden;
+}
+
+/* Ruled-paper lines + margin, like a real journal */
+.book-page.lined {
+  background-color: #fcf9f4;
+  background-image:
+    linear-gradient(var(--c-primary-soft) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217, 140, 160, 0.35) 1px, transparent 1px);
+  background-size: 100% 2rem, 100% 100%;
+  background-position: 0 1.4rem, 2.6rem 0;
+}
+
+.book-cover {
+  background: linear-gradient(150deg, var(--c-primary), var(--c-accent));
+  color: #fff;
+  padding: 2rem;
+}
+
